@@ -34,17 +34,20 @@ exports.getAllTours = async (req, res) => {
     const page = req.query.page * 1 || 1;
     const limit = req.query.limit * 1 || 100;
     const skip = (page - 1) * limit;
-    //   page=2&limit=50
+    console.log(`page: ${page}`, `limit: ${limit}`, `skip ${skip}`);
+
+    //   page=2&limit=10, 1-10 = page 1, 11-20 = page 2, 21-30 = page3
     query = query.skip(skip).limit(limit);
+
+    // log a message if page exceeds num of documents per page.
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('This page does not Exist!');
+    }
 
     /// Execute query
     const tours = await query;
-
-    // const query = Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
+    ///this looks like => query.sort().select().skip().limit()
 
     // Send response
     res.status(200).json({
@@ -57,7 +60,7 @@ exports.getAllTours = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: 'err',
+      message: `${err}`,
     });
   }
 };
@@ -75,7 +78,7 @@ exports.getTour = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: 'err',
+      message: `${err}`,
     });
   }
 };
@@ -96,7 +99,7 @@ exports.createTour = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: err,
+      message: `${err}`,
     });
   }
 };
@@ -117,7 +120,7 @@ exports.updateTour = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: 'invalid data sent',
+      message: `invalid data sent`,
     });
   }
 };
@@ -135,7 +138,7 @@ exports.deleteTour = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: 'invalid data sent',
+      message: `invalid data sent`,
     });
   }
 };

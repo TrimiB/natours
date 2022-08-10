@@ -28,7 +28,7 @@ const tours = JSON.parse(
 /// imort data into DB
 const importData = async () => {
   try {
-    await Tour.create(tours);
+    await Tour.create(tours); // Collection will be called "tours" !
     console.log('Data successfully loaded!');
   } catch (err) {
     console.log(err);

@@ -1,5 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
+
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+
 const tourRouter = require('./routes/tourRouts');
 const userRouter = require('./routes/userRouts');
 
@@ -22,13 +26,12 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-// Once response reches this line, no request is send, so we send this.
-app.all('*', (req, res, nex) => {
-  res.status(404).json({
-    status: 'fail',
-    message: `Cant find ${req.originalUrl} on this server ! `,
-  });
+// Once response reaches this line, no resopnse is send, so we send this.
+app.all('*', (req, res, next) => {
+  next(new AppError(`Cant find ${req.originalUrl} on this server ! `, 404));
 });
+// Error handeling middleware can use err from next().
+app.use(globalErrorHandler);
 
 /// 3) Start Server
 module.exports = app;

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,12 +26,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, `Please confirm your password!`],
     validate: {
+      // This only works on create and save !
       validator: function (value) {
         return value === this.password;
       },
       message: `Wrong password confirmation!`,
     },
   },
+});
+// Mongoose middleware pre 'save' (before presisting data to DB)
+userSchema.pre('save', async function (next) {
+  // if this password is NOT modified, return and call next() middleware.
+  if (!this.isModified('password')) return next();
+  // here we encrypt (hash) our password with coast of 12 - bcrypt
+  this.password = await bcrypt.hash(this.password, 12);
+  // then we set passwordConfirm to undefined and call next() middleware.
+  this.passwordConfirm = undefined;
+  next();
 });
 
 const User = mongoose.model('User', userSchema);

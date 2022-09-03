@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, `please enter a password!`],
     minlength: [8, `Password must be longer than 8 characters!`],
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -38,12 +39,21 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function (next) {
   // if this password is NOT modified, return and call next() middleware.
   if (!this.isModified('password')) return next();
+
   // here we encrypt (hash) our password with coast of 12 - bcrypt
   this.password = await bcrypt.hash(this.password, 12);
+
   // then we set passwordConfirm to undefined and call next() middleware.
   this.passwordConfirm = undefined;
   next();
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 

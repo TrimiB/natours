@@ -13,8 +13,24 @@ const signToken = function (id) {
 };
 
 const createAndSendToken = (user, statusCode, res) => {
+  // signing jwt based on the user id
   const token = signToken(user._id);
 
+  // Cookie
+  const cookieOption = {
+    expires: new Date( ////////////////////// hours, minutes,∞5 seconds, miliseconds
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+  // https is true only in production
+  if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
+  // responsing with the cookie
+  res.cookie('jwt', token, cookieOption);
+
+  // remove the password from the output
+  user.password = undefined;
+  // sending a status responses
   res.status(statusCode).json({
     status: `success`,
     token,

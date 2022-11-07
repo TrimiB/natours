@@ -11,6 +11,7 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const tourRouter = require('./routes/tourRouts');
 const userRouter = require('./routes/userRouts');
+const reviewRouter = require('./routes/reviewRouts');
 
 const app = express();
 
@@ -64,9 +65,10 @@ app.use((req, res, next) => {
   next();
 });
 
-////////////////// 2) Routs
+////////////////// 2) Routes
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // Once response reaches this line, no resopnse is send, so we send this.
 app.all('*', (req, res, next) => {

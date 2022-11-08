@@ -3,8 +3,11 @@ const catchAsync = require('../utils/catchAsync');
 
 // get all revies
 exports.getAllReviews = catchAsync(async (req, res, next) => {
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+
   // await finden the revires from Review.
-  const reviews = await Review.find();
+  const reviews = await Review.find(filter);
 
   // Send response
   res.status(200).json({

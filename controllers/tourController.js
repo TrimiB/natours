@@ -1,7 +1,5 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
 // middelware for "prefilling" all fields
@@ -12,47 +10,14 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  /// Execute query
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
-
-  // Send response
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours: tours,
-    },
-  });
-});
-
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate('reviews');
-  //const tour = await Tour.findById(req.params.id); // same as Tour.findOne({ _id: req.params.id }):
-
-  if (!tour) {
-    return next(new AppError(`No tour found with that ID`, 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: tour,
-    },
-  });
-});
-
+/// Get all Tours
+exports.getAllTours = factory.getAll(Tour);
+/// Get Tour
+exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 /// Create Tour
 exports.createTour = factory.createOne(Tour);
-
 /// Update Tour
 exports.updateTour = factory.updateOne(Tour);
-
 /// Delete Tour
 exports.deleteTour = factory.deleteOne(Tour);
 

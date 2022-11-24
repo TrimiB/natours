@@ -111,6 +111,11 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+/// Sorting tourschema on price in a ascending order ( -1 = descending)
+// tourSchema.index({ price: 1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 // Virtual Field. Does not get persisted to the DB.
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
@@ -169,6 +174,7 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.post(/^find/, function (docs, next) {
+  // eslint-disable-next-line no-console
   console.log(`QUERY took ${Date.now() - this.start} milliseconds!`);
   next();
 });
@@ -178,6 +184,7 @@ tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({
     $match: { secretTour: { $ne: true } },
   });
+  // eslint-disable-next-line no-console
   console.log(this.pipeline());
   next();
 });

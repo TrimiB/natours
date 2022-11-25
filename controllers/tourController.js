@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+const AppError = require('../utils/appError');
 
 // middelware for "prefilling" all fields
 exports.aliasTopTours = (req, res, next) => {
@@ -97,6 +98,42 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     stats: 'success',
     data: {
       plan,
+    },
+  });
+});
+
+/// /tours-within/:distance/center/:latlng/unit/:unit
+/// /tours-within/233/center/34.111745,-118.113491/unit/mi
+
+exports.getToursWithin = catchAsync(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params;
+  const [lat, lng] = latlng.split(',');
+
+  //// Earth radius
+  const radiusInMiles = 3963.19;
+  const radiusInKiloMeters = 6378.14;
+
+  const radius =
+    unit === 'mi' ? distance / radiusInMiles : distance / radiusInKiloMeters;
+
+  if (!lat || !lng) {
+    return next(
+      new AppError(
+        'Please specify your latitude and longitude in format: lat,lng',
+        400
+      )
+    );
+  }
+
+  const tours = await Tour.find({
+    startLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      data: tours,
     },
   });
 });

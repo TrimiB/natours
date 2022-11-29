@@ -86,7 +86,10 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in! Please log in to get acces.', 401)
+      new AppError(
+        "You are not logged in! Or you don't have acces to this route. Please log in to get acces.",
+        401
+      )
     );
   }
   // 2) Token Verification:

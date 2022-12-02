@@ -1,2 +1,21 @@
-//- <h1> The Park Camper </h1>
-h1 The Park Camper 
+doctype doctype html
+html(lang="en, de")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        
+        title Natours | #{tour}
+
+        link(rel='stylesheet', href='css/style.css')
+        link(rel='shortcut icon', type='image/png', href='img/favicon.png')
+    body 
+        h1= tour
+        h2= user.toUpperCase()
+        // h1 The Park Camper. This is a visible comment       
+        //- h1 The Park Camper. This is NOT a visible comment        
+
+        - const x = 9;
+        h2= 2 * x
+        p This is just some text
+

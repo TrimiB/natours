@@ -55,6 +55,7 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
   // here we encrypt (hash) our password with coast of 12 - bcrypt
+  // When importin json file, comment out.
   this.password = await bcrypt.hash(this.password, 12);
 
   // then we set passwordConfirm to undefined and call next() middleware.

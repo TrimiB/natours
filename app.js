@@ -28,9 +28,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // set security HTTP headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      scriptSrc: ["'self'", 'https://unpkg.com/leaflet@1.9.3/dist/'],
+      imgSrc: [
+        "'self'",
+        'https://unpkg.com/leaflet@1.9.3/dist/',
+        'https://tile.openstreetmap.org',
+        'data:',
+      ],
+    },
+  })
+);
 
-// development loggin
+// development loggins
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }

@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -31,16 +32,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      scriptSrc: ["'self'", 'https://unpkg.com/leaflet@1.9.3/dist/'],
-      imgSrc: [
-        "'self'",
-        'https://unpkg.com/leaflet@1.9.3/dist/',
-        'https://tile.openstreetmap.org',
-        'data:',
-      ],
+      defaultSrc: ["'self'", 'https:', 'data:', 'ws:'],
+      baseUri: ["'self'"],
+      imgSrc: ["'self'", 'https:', 'data:'],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      scriptSrc: ["'self'", 'https:', 'blob:'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
     },
   })
 );
+
+// scriptSrc: ["'self'", 'https://unpkg.com/leaflet@1.9.3/dist/'],
+//       imgSrc: [
+//         "'self'",
+//         'https://unpkg.com/leaflet@1.9.3/dist/',
+//         'https://tile.openstreetmap.org',
+//         'data:',
+//       ],
 
 // development loggins
 if (process.env.NODE_ENV === 'development') {
@@ -57,6 +65,8 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+// Cookie parser, reading cookies from body into req.body
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -81,6 +91,7 @@ app.use(
 // Test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
   // console.log(req.headers);
   next();
 });

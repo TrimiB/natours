@@ -1,4 +1,5 @@
 const Tour = require('../models/tourModel');
+const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -46,3 +47,24 @@ exports.getAccount = (req, res) => {
     title: 'Your account',
   });
 };
+
+/// this middleware gets called once we submit form with action attribute
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id, /// finding user by the user id from the request
+    {
+      name: req.body.name, /// updating name with value form req.body.name
+      email: req.body.email, // updating email with value form req.body.email
+    },
+    {
+      new: true, /// true to return new Document
+      runValidators: true, /// tre to validate data in fields
+    }
+  );
+
+  res.status(200).render('account', {
+    /// response
+    title: 'Your account',
+    user: updatedUser, /// user is the new updated user
+  });
+});

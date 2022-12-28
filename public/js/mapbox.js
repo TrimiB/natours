@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+//// LEAFLET //////
+
 export const displayMap = (locations) => {
   const map = L.map('map');
 

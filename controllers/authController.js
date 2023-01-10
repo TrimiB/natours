@@ -153,7 +153,7 @@ exports.isLoggedIn = async (req, res, next) => {
       }
 
       // THERE IS A LOGGED IN USER
-      res.locals.user = currentUser; // giving templates acces to current user.
+      res.locals.user = currentUser; // giving all templates acces to current user.
       return next();
     } catch (error) {
       // THERE IS NO LOGGED IN USER

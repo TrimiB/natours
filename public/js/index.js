@@ -4,6 +4,7 @@ import '@babel/polyfill';
 import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 // DOM ELEMENTS
 const mapbox = document.getElementById('map');
@@ -11,6 +12,7 @@ const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookbtn = document.getElementById('book-tour');
 
 // DELEGATION
 if (mapbox) {
@@ -57,4 +59,11 @@ if (userPasswordForm)
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
+  });
+
+if (bookbtn)
+  bookbtn.addEventListener('click', (e) => {
+    e.target.textContent = 'Proccessing...';
+    const { tourId } = e.target.dataset; /// saving data from data attribute from html
+    bookTour(tourId); /// calling bookTour from stripe.js and passing in tourId data
   });

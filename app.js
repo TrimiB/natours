@@ -33,7 +33,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'https:', 'data:', 'ws:'],
+      defaultSrc: [
+        "'self'",
+        'https:',
+        'data:',
+        'ws:',
+        'http://127.0.0.1:3000/api/v1/users/login',
+      ],
       baseUri: ["'self'"],
       imgSrc: ["'self'", 'https:', 'data:'],
       fontSrc: ["'self'", 'https:', 'data:'],

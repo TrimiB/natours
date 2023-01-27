@@ -6,6 +6,7 @@ import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { showAlert } from './alerts';
 
 // DOM ELEMENTS
 const mapbox = document.getElementById('map');
@@ -79,3 +80,6 @@ if (bookbtn)
     const { tourId } = e.target.dataset; /// saving data from data attribute from html
     bookTour(tourId); /// calling bookTour from stripe.js and passing in tourId data
   });
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alert) showAlert('success', alertMessage, 20);

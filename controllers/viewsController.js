@@ -8,7 +8,7 @@ exports.alerts = (req, res, next) => {
   const { alert } = req.query;
   if (alert === 'booking')
     res.locals.alert =
-      'Your booking was successfull! Please check email for comfirmation.If your booking does not show up immediatly, please come bcak later';
+      'Your booking was successfull! Please check email for comfirmation. If your booking does not show up immediatly, please come bcak later';
   next();
 };
 

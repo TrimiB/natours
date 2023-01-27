@@ -5,12 +5,7 @@ const bookingController = require('../controllers/bookingController');
 
 const router = express.Router();
 
-router.get(
-  '/',
-  bookingController.createBookingCheckout,
-  authController.isLoggedIn,
-  viewsController.getOverview
-);
+router.get('/', authController.isLoggedIn, viewsController.getOverview);
 
 router.get('/signup', authController.isLoggedIn, viewsController.getSignUpForm);
 
@@ -22,6 +17,7 @@ router.get('/my-tours', authController.protect, viewsController.getMyTours);
 /// Route for updating user data through form action.
 router.post(
   '/submit-user-data',
+  // bookingController.createBookingCheckout,
   authController.protect,
   viewsController.updateUserData
 );

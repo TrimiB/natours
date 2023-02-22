@@ -1,4 +1,4 @@
-# natours
+# Natours | Find your outdoor activity!
 A full Stack app.
 Checkout the website at:
 https://natours-ennm.onrender.com
